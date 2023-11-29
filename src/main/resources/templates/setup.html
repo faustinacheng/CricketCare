@@ -1,0 +1,19 @@
+<!DOCTYPE HTML>
+<html xmlns:th="https://www.thymeleaf.org">
+<head>
+    <title>CricketCare</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+<body>
+<h1>Register for CricketCare</h1>
+<form action="#" th:action="@{/setup}" th:object="${setup}" method="post">
+<!--    <p>Custom Attributes (JSON): <input type="text" th:field="*{json}" /></p>-->
+    <p>Custom Attributes (JSON): </p>
+    <textarea class="form-control" rows="5" style="white-space: nowrap"
+              name="json"
+              placeholder="Type in your JSON" th:field="*{json}"
+              required="required"></textarea>
+    <p><input type="submit" value="Submit" /> <input type="reset" value="Reset" /></p>
+</form>
+</body>
+</html>
