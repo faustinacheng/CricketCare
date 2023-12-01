@@ -86,6 +86,10 @@ public class CricketController {
             System.out.println(json);
             HttpEntity<String> entity = new HttpEntity<String>(json, headers);
 //            restTemplate.postForEntity(url, entity, Long.class);
+            ResponseEntity<Long> response = restTemplate.postForEntity(url, entity, Long.class);
+            Long reservationId = response.getBody();
+
+            model.addAttribute("reservationId", reservationId);
             return "reservation_success";
         }
 
