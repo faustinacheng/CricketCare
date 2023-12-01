@@ -61,4 +61,32 @@ public class CricketController {
             return "setup_success";
         }
 
+        @GetMapping("/createReservation")
+        public String createReservation(Model model) {
+            model.addAttribute("reservation", new ReservationForm());
+            return "create_reservation";
+        }
+
+        @PostMapping("/createReservation")
+        public String reservationSubmit(@ModelAttribute ReservationForm reservation, Model model){
+            String replaced = reservation.getCustomValues().replace("\r\n", " ");
+            reservation.setCustomValues(replaced);
+            reservation.setClientId(clientId);
+            model.addAttribute("reservation", reservation);
+            String url = service;
+            HttpHeaders headers = new HttpHeaders();
+            headers.add("Content-Type", "application/json");
+            String json = "{\n" +
+                    "  \"clientId\": " + reservation.getClientId() + ",\n" +
+                    "  \"userId\": \"" + reservation.getUserId() + "\",\n" +
+                    "  \"startTime\": \"" + reservation.getStartTime() + "\",\n" +
+                    "  \"numSlots\": " + reservation.getNumSlots() + ",\n" +
+                    "  \"customValues\": " + reservation.getCustomValues() + "\n" +
+                    "}";
+            System.out.println(json);
+            HttpEntity<String> entity = new HttpEntity<String>(json, headers);
+//            restTemplate.postForEntity(url, entity, Long.class);
+            return "reservation_success";
+        }
+
 }
