@@ -1,0 +1,22 @@
+<!DOCTYPE HTML>
+<html xmlns:th="https://www.thymeleaf.org">
+<head>
+    <title>CricketCare</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+<body>
+<h1>Book an appointment with CricketCare</h1>
+<form action="#" th:action="@{/createReservation}" th:object="${reservation}" method="post">
+    <!--    <p>Custom Attributes (JSON): <input type="text" th:field="*{json}" /></p>-->
+    <p>User ID: <input type="text" th:field="*{userId}" /></p>
+    <p>Start Time: <input type="datetime-local" th:field="*{startTime}"/></p>
+    <p>Number of 1 hour slots: <input type="text" th:field="*{numSlots}" /></p>
+    <p>Custom Attributes (JSON): </p>
+    <textarea class="form-control" rows="5" style="white-space: nowrap"
+              name="json"
+              placeholder="Custom Values JSON" th:field="*{customValues}"
+              required="required"></textarea>
+    <p><input type="submit" value="Submit" /> <input type="reset" value="Reset" /></p>
+</form>
+</body>
+</html>
