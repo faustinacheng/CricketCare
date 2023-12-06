@@ -56,11 +56,13 @@ public class CricketController {
             headers.add("Content-Type", "application/json");
             System.out.println(setup.getJson());
             HttpEntity<String> entity = new HttpEntity<String>(setup.getJson(), headers);
-            restTemplate.postForEntity(url, entity, String.class);
+            ResponseEntity<Long> response = restTemplate.postForEntity(url, entity, Long.class);
+            clientId = response.getBody();
+
+            model.addAttribute("clientId", clientId);
 //            restTemplate.postForObject(url, setup.getJson(), String.class);
             return "setup_success";
         }
-
         @GetMapping("/createReservation")
         public String createReservation(Model model) {
             model.addAttribute("reservation", new ReservationForm());
@@ -91,6 +93,18 @@ public class CricketController {
 
             model.addAttribute("reservationId", reservationId);
             return "reservation_success";
+
+        @GetMapping("/getClientInfo")
+        public String getClientInfo(@RequestParam("clientId") String clientId, Model model) {
+            String url = service + "getClient?clientId=" + clientId;
+            HttpHeaders headers = new HttpHeaders();
+            headers.add("Content-Type", "application/json");
+            HttpEntity<Long> entity = new HttpEntity<Long>(Long.valueOf(clientId), headers);
+            ResponseEntity<String> response = restTemplate.getForEntity(url, String.class, entity);
+            String clientInfo = response.getBody();
+
+            model.addAttribute("clientInfo", clientInfo);
+            return "client_info";
         }
 
 }
