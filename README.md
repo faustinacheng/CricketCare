@@ -105,3 +105,25 @@ cd CricketCare
 ```
 http://localhost:8080/setup
 ```
+
+# How to Setup with Docker
+1. Clone the Repository:
+
+```
+git clone https://github.com/your-username/CricketCare.git
+cd CricketCare
+```
+
+2. Build using Docker
+- Note: [Docker](https://docs.docker.com/get-docker/) should be installed on your machine.
+
+```
+docker build -t my-application:my-application .
+docker run -d -p 8080:8080 --name myContainer my-application:my-application
+```
+
+3. Access the initial page on the web application in browser
+
+```
+http://localhost:8080/setup
+```
