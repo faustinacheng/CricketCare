@@ -5,10 +5,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import org.springframework.web.client.RestTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,11 +17,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 //import org.apache.http.entity.ContentType;
 //import org.apache.http.impl.client.HttpClients;
 //import org.apache.http.util.EntityUtils;
+import org.springframework.http.HttpMethod;
+
+import java.util.HashMap;
+import java.util.Map;
 
 
 @Controller
 public class CricketController {
-    String service = "http://localhost:8081/api/v1/reservation/";
+    String service = "http://localhost:8081/api/v1/reservation";
     private final RestTemplate restTemplate;
     Long clientId = -1L;
 
@@ -35,7 +36,7 @@ public class CricketController {
 
         @GetMapping("/greeting")
         public String cricket(@RequestParam(name="name", required=false, defaultValue="World") String name, Model model) {
-            model.addAttribute("name", name);
+            model.addAttribute("/name", name);
             return "greeting";
         }
 
@@ -51,7 +52,7 @@ public class CricketController {
             setup.setJson(replaced);
             model.addAttribute("setup", setup);
 //            String json = setup.getJson();
-            String url = service + "createClient";
+            String url = service + "/createClient";
             HttpHeaders headers = new HttpHeaders();
             headers.add("Content-Type", "application/json");
             System.out.println(setup.getJson());
@@ -59,7 +60,7 @@ public class CricketController {
             ResponseEntity<Long> response = restTemplate.postForEntity(url, entity, Long.class);
             clientId = response.getBody();
 
-            model.addAttribute("clientId", clientId);
+            model.addAttribute("clientId", Long.valueOf(clientId));
 //            restTemplate.postForObject(url, setup.getJson(), String.class);
             return "setup_success";
         }
@@ -70,7 +71,7 @@ public class CricketController {
         }
 
         @PostMapping("/createReservation")
-        public String reservationSubmit(@ModelAttribute ReservationForm reservation, Model model){
+        public String reservationSubmit(@ModelAttribute ReservationForm reservation, Model model) {
             String replaced = reservation.getCustomValues().replace("\r\n", " ");
             reservation.setCustomValues(replaced);
             reservation.setClientId(clientId);
@@ -93,18 +94,105 @@ public class CricketController {
 
             model.addAttribute("reservationId", reservationId);
             return "reservation_success";
+        }
 
         @GetMapping("/getClientInfo")
-        public String getClientInfo(@RequestParam("clientId") String clientId, Model model) {
-            String url = service + "getClient?clientId=" + clientId;
+        public String getClientInfo(Model model) {
+            String url = service + "/getClient?clientId=" + clientId;
             HttpHeaders headers = new HttpHeaders();
             headers.add("Content-Type", "application/json");
-            HttpEntity<Long> entity = new HttpEntity<Long>(Long.valueOf(clientId), headers);
+            HttpEntity<Long> entity = new HttpEntity<Long>(clientId, headers);
             ResponseEntity<String> response = restTemplate.getForEntity(url, String.class, entity);
             String clientInfo = response.getBody();
 
             model.addAttribute("clientInfo", clientInfo);
             return "client_info";
         }
+
+        // gets all reservations for a client
+        @GetMapping("/getReservations")
+        public String getClientReservations(Model model){
+            String url = service + "/getClientReservations?clientId=" + clientId;
+            HttpHeaders headers = new HttpHeaders();
+            headers.add("Content-Type", "application/json");
+            HttpEntity<Long> entity = new HttpEntity<Long>(clientId, headers);
+            ResponseEntity<String> response = restTemplate.getForEntity(url, String.class, entity);
+            String clientInfo = response.getBody();
+
+            model.addAttribute("clientInfo", clientInfo);
+            return "reservation_info";
+        }
+
+        @GetMapping("/cancelReservation")
+        public String cancelReservations(Model model) {
+            model.addAttribute("reservation", new EditReservationForm());
+            return "cancel_reservation";
+        }
+
+//            String url = service + "/cancelReservation?reservationId=" + reservationId;
+//            HttpHeaders headers = new HttpHeaders();
+//            headers.add("Content-Type", "application/json");
+//            HttpEntity<Long> entity = new HttpEntity<Long>(Long.valueOf(reservationId), headers);
+//            ResponseEntity<String> response = restTemplate.postForEntity(url, entity, String.class);
+//            String clientInfo = response.getBody();
+//
+//            model.addAttribute("clientInfo", clientInfo);
+//            return "cancel_success";
+//        }
+//        @DeleteMapping("/cancelReservation")
+//        public String cancelSubmit(@ModelAttribute EditReservationForm reservation, Model model){
+//            Long reservationId = reservation.getReservationId();
+//            String url = service + "/cancelReservation/" + reservationId;
+//            HttpHeaders headers = new HttpHeaders();
+//            headers.add("Content-Type", "application/json");
+//            HttpEntity<Long> entity = new HttpEntity<Long>(reservationId, headers);
+//            ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.DELETE, null,
+//                                                                String.class, reservationId);
+//            String clientInfo = response.getBody();
+//
+//            model.addAttribute("clientInfo", clientInfo);
+//            return "cancel_success";
+//        }
+        @DeleteMapping("/cancelReservation/{reservationId}")
+        public String cancelSubmit(@PathVariable Long reservationId, Model model) {
+            //System.out.println(reservationId);
+            String url = service + "/1";
+            HttpHeaders headers = new HttpHeaders();
+            headers.add("Content-Type", "application/json");
+            HttpEntity<Void> entity = new HttpEntity<>(headers);
+
+            ResponseEntity<String> response = restTemplate.exchange(
+                    url, HttpMethod.DELETE, entity, String.class);
+
+            String clientInfo = response.getBody();
+            /**Map<String, String> params = new HashMap<String, String>();
+            params.put("reservationId", "1");
+            RestTemplate restTemplate = new RestTemplate();
+            restTemplate.delete(url, params); */
+//            model.addAttribute("clientInfo", clientInfo);
+
+            return "cancel_success";
+        }
+
+        @PutMapping("/updateReservations")
+        public String updateClientReservations(Model model){
+            String url = service + "/updateClientReservations?clientId=" + clientId;
+            HttpHeaders headers = new HttpHeaders();
+            headers.add("Content-Type", "application/json");
+            HttpEntity<Long> entity = new HttpEntity<Long>(clientId, headers);
+            ResponseEntity<String> response = restTemplate.getForEntity(url, String.class, entity);
+            String clientInfo = response.getBody();
+
+            model.addAttribute("clientInfo", clientInfo);
+            return "reservation_info";
+        }
+
+        @PostMapping("/updateReservation")
+        public String updateReservation(Model model){
+            String url = service + "/updateReservation?" + clientId;
+            return "update_reservation";
+        }
+
+
 
 }
