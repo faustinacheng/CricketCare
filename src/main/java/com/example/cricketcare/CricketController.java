@@ -65,11 +65,11 @@ public class CricketController {
         }
 
         @GetMapping("/getClientInfo")
-        public String getClientInfo(Model model) {
+        public String getClientInfo(@RequestParam("clientId") String clientId, Model model) {
             String url = service + "getClient?clientId=" + clientId;
             HttpHeaders headers = new HttpHeaders();
             headers.add("Content-Type", "application/json");
-            HttpEntity<Long> entity = new HttpEntity<Long>(clientId, headers);
+            HttpEntity<Long> entity = new HttpEntity<Long>(Long.valueOf(clientId), headers);
             ResponseEntity<String> response = restTemplate.getForEntity(url, String.class, entity);
             String clientInfo = response.getBody();
 
