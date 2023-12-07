@@ -1,5 +1,8 @@
 package com.example.cricketcare;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
@@ -20,7 +23,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpMethod;
 
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
 
 
 @Controller
@@ -28,6 +34,7 @@ public class CricketController {
     String service = "http://localhost:8081/api/v1/reservation";
     private final RestTemplate restTemplate;
     Long clientId = -1L;
+    Set<String> customFields = new HashSet<>();
 
         @Autowired
         public CricketController(RestTemplate restTemplate) {
@@ -42,6 +49,10 @@ public class CricketController {
 
         @GetMapping("/setup")
         public String setup(Model model) {
+            if (clientId != -1L) {
+                model.addAttribute("clientId", clientId);
+                return "setup_blocked";
+            }
             model.addAttribute("setup", new SetupForm());
             return "setup";
         }
@@ -49,6 +60,21 @@ public class CricketController {
         @PostMapping("/setup")
         public String setupSubmit(@ModelAttribute SetupForm setup, Model model){
             String replaced = setup.getJson().replace("\r\n", " ");
+
+            try {
+                ObjectMapper objectMapper = new ObjectMapper();
+                JsonNode jsonNode = objectMapper.readTree(replaced);
+
+                JsonNode customValuesNode = jsonNode.path("customValues");
+
+                Iterator<String> fieldNames = customValuesNode.fieldNames();
+                while (fieldNames.hasNext()) {
+                    customFields.add(fieldNames.next());
+                }
+            } catch (Exception e) {
+                return "greeting";
+            }
+
             setup.setJson(replaced);
             model.addAttribute("setup", setup);
 //            String json = setup.getJson();
