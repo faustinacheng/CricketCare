@@ -30,8 +30,17 @@
     </div>
 </header>
 <main>
-<h1>Register for CricketCare</h1>
-<p>Success! Your reservation is created!</p>
+<h1>Update your appointment on CricketCare:</h1>
+<form action="#" th:action="@{/updateReservation}" th:object="${update}" method="post">
+    <!--    <p>Custom Attributes (JSON): <input type="text" th:field="*{json}" /></p>-->
+    <p>Reservation ID: <input type="text" th:field="*{reservationId}" /></p>
+    <p>Fields and values to update: </p>
+    <textarea class="form-control" rows="5" style="white-space: nowrap"
+              name="json"
+              placeholder="Please input in JSON format" th:field="*{json}"
+              required="required"></textarea>
+    <p><input type="submit" value="Submit" /> <input type="reset" value="Reset" /></p>
+</form>
 </main>
 </body>
 </html>

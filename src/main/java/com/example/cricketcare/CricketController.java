@@ -31,10 +31,11 @@ import java.util.Set;
 
 @Controller
 public class CricketController {
-    String service = "http://localhost:8081/api/v1/reservation";
+//    String service = "http://localhost:8081/api/v1/reservation";
+    String service = "https://bugyourspot-407405.uc.r.appspot.com/api/v1/reservation";
     private final RestTemplate restTemplate;
     Long clientId = -1L;
-    Set<String> customFields = new HashSet<>();
+    Set<String> customFields = new HashSet<>(); // doctorID,
 
         @Autowired
         public CricketController(RestTemplate restTemplate) {
@@ -42,8 +43,7 @@ public class CricketController {
         }
 
         @GetMapping("/greeting")
-        public String cricket(@RequestParam(name="name", required=false, defaultValue="World") String name, Model model) {
-            model.addAttribute("/name", name);
+        public String cricket(Model model) {
             return "greeting";
         }
 
@@ -173,24 +173,42 @@ public class CricketController {
             return "cancel_success";
         }
 
-        @PostMapping("/updateReservations")
-        public String updateClientReservations(Model model){
-            String url = service + "/updateClientReservations?clientId=" + clientId;
-            HttpHeaders headers = new HttpHeaders();
-            headers.add("Content-Type", "application/json");
-            HttpEntity<Long> entity = new HttpEntity<Long>(clientId, headers);
-            ResponseEntity<String> response = restTemplate.getForEntity(url, String.class, entity);
-            String clientInfo = response.getBody();
+        @GetMapping("/updateReservation")
+        public String updateReservation(Model model){
+            model.addAttribute("update", new UpdateForm());
+            return "update_reservation";
+        }
+        @PostMapping("/updateReservation")
+        public String updateClientReservations(@ModelAttribute UpdateForm update, Model model){
+//            String url = service + "/updateClientReservations?clientId=" + clientId;
+//            HttpHeaders headers = new HttpHeaders();
+//            headers.add("Content-Type", "application/json");
+//            HttpEntity<Long> entity = new HttpEntity<Long>(clientId, headers);
+//            ResponseEntity<String> response = restTemplate.getForEntity(url, String.class, entity);
+//            String clientInfo = response.getBody();
+//
+//            model.addAttribute("clientInfo", clientInfo);
+            String replaced = update.getJson().replace("\r\n", " ");
+            update.setJson(replaced);
+            model.addAttribute("update", update);
+//            String json = setup.getJson();
+            String url = service + "/" + update.getReservationId(); // Use the dynamic reservationId in the URL
 
-            model.addAttribute("clientInfo", clientInfo);
+            HttpHeaders headers = new HttpHeaders();
+            headers.add("Content-Type", "application/json"); // This line can be removed if not needed
+            HttpEntity<String> entity = new HttpEntity<String>(update.getJson(), headers);
+            System.out.println(update.getJson());
+            // Make a DELETE request
+            ResponseEntity<String> response = restTemplate.exchange(
+                    url, HttpMethod.PUT, entity, String.class);
+
+
+//            ResponseEntity<Long> response = restTemplate.postForEntity(url, entity, Long.class);
+
             return "reservation_info";
         }
 
-        @PostMapping("/updateReservation")
-        public String updateReservation(Model model){
-            String url = service + "/updateReservation?" + clientId;
-            return "update_reservation";
-        }
+
 
 
 

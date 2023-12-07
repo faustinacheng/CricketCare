@@ -1,10 +1,35 @@
-<!DOCTYPE HTML>
-<html xmlns:th="https://www.thymeleaf.org">
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<html lang="en">
 <head>
-  <title>CricketCare</title>
-  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <title> CricketCare </title>
+  <!-- Style CSS -->
+  <link rel="stylesheet" th:href="@{/styles.css}">
+
 </head>
 <body>
+
+<header>
+  <div class="container">
+    <a href="/greeting">
+      <img class="buglogo" th:src="@{images/bugbusters.jpg}" alt="bugs" width="100px">
+      <h1 class="logo">CricketCare</h1></a>
+
+    <nav>
+      <ul>
+        <li><a href="/setup">Setup</a></li>
+        <li><a href="/getClientInfo">Get Schema</a></li>
+        <li><a href="/createReservation">Book</a></li>
+        <li><a href="/getReservations">Appointments</a></li>
+        <li><a href="/updateReservation">Update</a></li>
+        <li><a href="/cancelReservation">Delete</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+<main>
 <h1>Register for CricketCare</h1>
 <form action="#" th:action="@{/cancelReservation}" th:object="${reservation}" method="post">
   <!--    <p>Custom Attributes (JSON): <input type="text" th:field="*{json}" /></p>-->
@@ -15,5 +40,6 @@
             required="required"></textarea>
   <p><input type="submit" value="Submit" /> <input type="reset" value="Reset" /></p>
 </form>
+</main>
 </body>
 </html>
