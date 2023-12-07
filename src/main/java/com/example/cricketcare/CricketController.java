@@ -129,52 +129,25 @@ public class CricketController {
             return "cancel_reservation";
         }
 
-//            String url = service + "/cancelReservation?reservationId=" + reservationId;
-//            HttpHeaders headers = new HttpHeaders();
-//            headers.add("Content-Type", "application/json");
-//            HttpEntity<Long> entity = new HttpEntity<Long>(Long.valueOf(reservationId), headers);
-//            ResponseEntity<String> response = restTemplate.postForEntity(url, entity, String.class);
-//            String clientInfo = response.getBody();
-//
-//            model.addAttribute("clientInfo", clientInfo);
-//            return "cancel_success";
-//        }
-//        @DeleteMapping("/cancelReservation")
-//        public String cancelSubmit(@ModelAttribute EditReservationForm reservation, Model model){
-//            Long reservationId = reservation.getReservationId();
-//            String url = service + "/cancelReservation/" + reservationId;
-//            HttpHeaders headers = new HttpHeaders();
-//            headers.add("Content-Type", "application/json");
-//            HttpEntity<Long> entity = new HttpEntity<Long>(reservationId, headers);
-//            ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.DELETE, null,
-//                                                                String.class, reservationId);
-//            String clientInfo = response.getBody();
-//
-//            model.addAttribute("clientInfo", clientInfo);
-//            return "cancel_success";
-//        }
-        @DeleteMapping("/cancelReservation/{reservationId}")
-        public String cancelSubmit(@PathVariable Long reservationId, Model model) {
-            //System.out.println(reservationId);
-            String url = service + "/1";
+        @PostMapping("/cancelReservation")
+        public String cancelSubmit(@ModelAttribute EditReservationForm reservation, Model model) {
+            String url = service + "/" + reservation.getReservationId(); // Use the dynamic reservationId in the URL
+
             HttpHeaders headers = new HttpHeaders();
-            headers.add("Content-Type", "application/json");
-            HttpEntity<Void> entity = new HttpEntity<>(headers);
+            // headers.add("Content-Type", "application/json"); // This line can be removed if not needed
 
+            // Make a DELETE request
             ResponseEntity<String> response = restTemplate.exchange(
-                    url, HttpMethod.DELETE, entity, String.class);
+                    url, HttpMethod.DELETE, new HttpEntity<>(headers), String.class);
 
-            String clientInfo = response.getBody();
-            /**Map<String, String> params = new HashMap<String, String>();
-            params.put("reservationId", "1");
-            RestTemplate restTemplate = new RestTemplate();
-            restTemplate.delete(url, params); */
-//            model.addAttribute("clientInfo", clientInfo);
+            // Handle the response based on your API's behavior
+            // If the response body contains valuable information, uncomment the next line
+            // model.addAttribute("clientInfo", response.getBody());
 
             return "cancel_success";
         }
 
-        @PutMapping("/updateReservations")
+        @PostMapping("/updateReservations")
         public String updateClientReservations(Model model){
             String url = service + "/updateClientReservations?clientId=" + clientId;
             HttpHeaders headers = new HttpHeaders();
