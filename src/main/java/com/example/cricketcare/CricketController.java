@@ -31,8 +31,8 @@ import java.util.Set;
 
 @Controller
 public class CricketController {
-//    String service = "http://localhost:8081/api/v1/reservation";
-    String service = "https://bugyourspot-407405.uc.r.appspot.com/api/v1/reservation";
+    String service = "http://localhost:8081/api/v1/reservation";
+//    String service = "https://bugyourspot-407405.uc.r.appspot.com/api/v1/reservation";
     private final RestTemplate restTemplate;
     Long clientId = -1L;
     Set<String> customFields = new HashSet<>(); // doctorID,
@@ -157,7 +157,7 @@ public class CricketController {
 
         @PostMapping("/cancelReservation")
         public String cancelSubmit(@ModelAttribute EditReservationForm reservation, Model model) {
-            String url = service + "/" + reservation.getReservationId(); // Use the dynamic reservationId in the URL
+            String url = service + "?reservationId=" + reservation.getReservationId(); // Use the dynamic reservationId in the URL
 
             HttpHeaders headers = new HttpHeaders();
             // headers.add("Content-Type", "application/json"); // This line can be removed if not needed
@@ -189,10 +189,11 @@ public class CricketController {
 //
 //            model.addAttribute("clientInfo", clientInfo);
             String replaced = update.getJson().replace("\r\n", " ");
-            update.setJson(replaced);
+            String replaced2 = "{ \"reservationId\": " + update.getReservationId() + ", \"updateValues\": " + replaced + "}";
+            update.setJson(replaced2);
             model.addAttribute("update", update);
 //            String json = setup.getJson();
-            String url = service + "/" + update.getReservationId(); // Use the dynamic reservationId in the URL
+            String url = service;
 
             HttpHeaders headers = new HttpHeaders();
             headers.add("Content-Type", "application/json"); // This line can be removed if not needed
