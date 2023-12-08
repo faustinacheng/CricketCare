@@ -86,7 +86,8 @@ While a dental clinic may have the following schema instead:
 # How to Setup
 CricketCare interacts with the BugYourSpot backend service over the network, making API calls to perform various reservation-related tasks. The backend service provides a robust structure for handling reservations, allowing hospitals to define custom reservation schemas, and manage reservations effortlessly. These API calls are triggered in response to certain actions taken by a user of the client application.
 
-To access the client application, these are the necessary steps. The assumption is that the backend server, BugYourSpot, is already running in the background.
+To access the client application, these are the necessary steps. The assumption is that the backend server, BugYourSpot, is already running in the background locally OR since it is also deployed on Google App Engine (https://bugyourspot-407405.uc.r.appspot.com/api/v1/reservation) it can be accessed by anyone. However, for Google Cloud Credit purposes the service must be enabled/disabled by us manually.
+
 1. Clone the Repository:
 
 ```

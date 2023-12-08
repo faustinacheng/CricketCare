@@ -35,6 +35,7 @@ public class CricketController {
 //    String service = "https://bugyourspot-407405.uc.r.appspot.com/api/v1/reservation";
     private final RestTemplate restTemplate;
     Long clientId = -1L;
+    Boolean booked = false;
     Set<String> customFields = new HashSet<>(); // doctorID,
 
         @Autowired
@@ -119,11 +120,15 @@ public class CricketController {
             Long reservationId = response.getBody();
 
             model.addAttribute("reservationId", reservationId);
+            booked = true;
             return "reservation_success";
         }
 
         @GetMapping("/getClientInfo")
         public String getClientInfo(Model model) {
+            if (clientId == -1L) {
+                return "client_info_blocked";
+            }
             String url = service + "/getClient?clientId=" + clientId;
             HttpHeaders headers = new HttpHeaders();
             headers.add("Content-Type", "application/json");
@@ -138,6 +143,9 @@ public class CricketController {
         // gets all reservations for a client
         @GetMapping("/getReservations")
         public String getClientReservations(Model model){
+            if (!booked) {
+                return "get_reservations_blocked";
+            }
             String url = service + "/getClientReservations?clientId=" + clientId;
             HttpHeaders headers = new HttpHeaders();
             headers.add("Content-Type", "application/json");
@@ -206,7 +214,7 @@ public class CricketController {
 
 //            ResponseEntity<Long> response = restTemplate.postForEntity(url, entity, Long.class);
 
-            return "reservation_info";
+            return "update_success";
         }
 
         @ExceptionHandler(Exception.class)
