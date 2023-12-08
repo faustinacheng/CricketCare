@@ -33,10 +33,20 @@
 <h1>Register for CricketCare</h1>
 <form action="#" th:action="@{/setup}" th:object="${setup}" method="post">
 <!--    <p>Custom Attributes (JSON): <input type="text" th:field="*{json}" /></p>-->
-    <p>Custom Attributes (JSON): </p>
+    <p>Enter your desired initialization values and custom fields (JSON): </p>
     <textarea class="form-control" rows="5" style="white-space: nowrap"
               name="json"
-              placeholder="Type in your JSON" th:field="*{json}"
+              placeholder='ie. {
+"startTime":  "09:00:00",
+"endTime": "21:00:00",
+"reservationsPerSlot": 3,
+ "slotLength": "1",
+  "customValues": {
+    "doctorId": "INTEGER",
+    "patientNotes": "VARCHAR"
+  }
+}
+' th:field="*{json}"
               required="required"></textarea>
     <p><input type="submit" value="Submit" /> <input type="reset" value="Reset" /></p>
 </form>

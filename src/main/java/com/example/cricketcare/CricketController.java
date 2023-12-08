@@ -206,7 +206,7 @@ public class CricketController {
 
 //            ResponseEntity<Long> response = restTemplate.postForEntity(url, entity, Long.class);
 
-            return "reservation_info";
+            return "update_success";
         }
 
 
