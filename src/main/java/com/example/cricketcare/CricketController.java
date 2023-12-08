@@ -209,8 +209,9 @@ public class CricketController {
             return "reservation_info";
         }
 
-
-
-
-
+        @ExceptionHandler(Exception.class)
+        public String handleException(Exception e, Model model) {
+            model.addAttribute("error", e.getMessage());
+            return "error_view";
+        }
 }
