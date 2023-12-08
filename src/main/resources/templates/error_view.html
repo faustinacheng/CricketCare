@@ -1,31 +1,49 @@
+<!--<!DOCTYPE HTML>-->
+<!--<html xmlns:th="http://www.thymeleaf.org">-->
+<!--<head>-->
+<!--    <title>Getting Started: Serving Web Content</title>-->
+<!--    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />-->
+<!--</head>-->
+<!--<body>-->
+<!--    <p th:text="|Hello, ${name}!|" />-->
+<!--    <p>We are BugBusters!</p>-->
+<!--    <img th:src="@{images/bugbusters.jpg}" alt="bugs">-->
+<!--</body>-->
+<!--</html>-->
 <!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Error occurred</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <title> CricketCare </title>
+  <!-- Style CSS -->
+  <link rel="stylesheet" th:href="@{/styles.css}">
 
 </head>
 <body>
 
-  <header>
-    <div class="container">
-      <a href="/greeting">
-        <img class="buglogo" th:src="@{images/bugbusters.jpg}" alt="bugs" width="100px">
-        <h1 class="logo">CricketCare</h1></a>
+<header>
+  <div class="container">
+    <a href="/greeting">
+      <img class="buglogo" th:src="@{images/bugbusters.jpg}" alt="bugs" width="100px">
+      <h1 class="logo">CricketCare</h1></a>
 
-      <nav>
-        <ul>
-          <li><a href="/setup">Setup</a></li>
-          <li><a href="/getClientInfo">Get Schema</a></li>
-          <li><a href="/createReservation">Book</a></li>
-          <li><a href="/getReservations">Appointments</a></li>
-          <li><a href="/updateReservation">Update</a></li>
-          <li><a href="/cancelReservation">Delete</a></li>
-        </ul>
-      </nav>
-    </div>
-  </header>
-
+    <nav>
+      <ul>
+        <li><a href="/setup">Setup</a></li>
+        <li><a href="/getClientInfo">Get Schema</a></li>
+        <li><a href="/createReservation">Book</a></li>
+        <li><a href="/getReservations">Appointments</a></li>
+        <li><a href="/updateReservation">Update</a></li>
+        <li><a href="/cancelReservation">Delete</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+<main>
+  <h1> An Error Has Occurred</h1>
   <p th:text="${error}" />
+</main>
 </body>
 </html>
