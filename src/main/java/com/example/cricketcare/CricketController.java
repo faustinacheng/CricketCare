@@ -12,27 +12,17 @@ import org.springframework.web.bind.annotation.*;
 
 import org.springframework.web.client.RestTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
-
-//import org.apache.http.HttpEntity;
-//import org.apache.http.HttpResponse;
-//import org.apache.http.client.HttpClient;
-//import org.apache.http.client.methods.HttpPost;
-//import org.apache.http.entity.ContentType;
-//import org.apache.http.impl.client.HttpClients;
-//import org.apache.http.util.EntityUtils;
 import org.springframework.http.HttpMethod;
 
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.Map;
 import java.util.Set;
 
 
 @Controller
 public class CricketController {
     String service = "http://localhost:8081/api/v1/reservation";
-//    String service = "https://bugyourspot-407405.uc.r.appspot.com/api/v1/reservation";
+    //String service = "https://cricketcare.uc.r.appspot.com/setup";
     private final RestTemplate restTemplate;
     Long clientId = -1L;
     Boolean booked = false;
@@ -41,6 +31,31 @@ public class CricketController {
         @Autowired
         public CricketController(RestTemplate restTemplate) {
             this.restTemplate = restTemplate;
+        }
+
+        @GetMapping("/login")
+        public String login(Model model){
+            model.addAttribute("login", new LoginForm());
+            return "login_page";
+        }
+
+        @PostMapping("/login")
+        public String login(@ModelAttribute LoginForm login, Model model){
+            Long clientId = Long.valueOf(login.getClientId());
+
+            String url = service + "/getClient?clientId=" + clientId;
+            HttpHeaders headers = new HttpHeaders();
+            headers.add("Content-Type", "application/json");
+            HttpEntity<Long> entity = new HttpEntity<Long>(clientId, headers);
+
+            try{
+                ResponseEntity<String> response = restTemplate.getForEntity(url, String.class, entity);
+                this.clientId = clientId;
+                return "setup";
+            }
+            catch (Exception e){
+                return "login";
+            }
         }
 
         @GetMapping("/greeting")
@@ -78,7 +93,6 @@ public class CricketController {
 
             setup.setJson(replaced);
             model.addAttribute("setup", setup);
-//            String json = setup.getJson();
             String url = service + "/createClient";
             HttpHeaders headers = new HttpHeaders();
             headers.add("Content-Type", "application/json");
@@ -88,7 +102,6 @@ public class CricketController {
             clientId = response.getBody();
 
             model.addAttribute("clientId", Long.valueOf(clientId));
-//            restTemplate.postForObject(url, setup.getJson(), String.class);
             return "setup_success";
         }
         @GetMapping("/createReservation")
@@ -113,9 +126,9 @@ public class CricketController {
                     "  \"numSlots\": " + reservation.getNumSlots() + ",\n" +
                     "  \"customValues\": " + reservation.getCustomValues() + "\n" +
                     "}";
+
             System.out.println(json);
             HttpEntity<String> entity = new HttpEntity<String>(json, headers);
-//            restTemplate.postForEntity(url, entity, Long.class);
             ResponseEntity<Long> response = restTemplate.postForEntity(url, entity, Long.class);
             Long reservationId = response.getBody();
 
@@ -166,17 +179,10 @@ public class CricketController {
         @PostMapping("/cancelReservation")
         public String cancelSubmit(@ModelAttribute EditReservationForm reservation, Model model) {
             String url = service + "?reservationId=" + reservation.getReservationId(); // Use the dynamic reservationId in the URL
-
             HttpHeaders headers = new HttpHeaders();
-            // headers.add("Content-Type", "application/json"); // This line can be removed if not needed
-
             // Make a DELETE request
             ResponseEntity<String> response = restTemplate.exchange(
                     url, HttpMethod.DELETE, new HttpEntity<>(headers), String.class);
-
-            // Handle the response based on your API's behavior
-            // If the response body contains valuable information, uncomment the next line
-            // model.addAttribute("clientInfo", response.getBody());
 
             return "cancel_success";
         }
@@ -188,31 +194,20 @@ public class CricketController {
         }
         @PostMapping("/updateReservation")
         public String updateClientReservations(@ModelAttribute UpdateForm update, Model model){
-//            String url = service + "/updateClientReservations?clientId=" + clientId;
-//            HttpHeaders headers = new HttpHeaders();
-//            headers.add("Content-Type", "application/json");
-//            HttpEntity<Long> entity = new HttpEntity<Long>(clientId, headers);
-//            ResponseEntity<String> response = restTemplate.getForEntity(url, String.class, entity);
-//            String clientInfo = response.getBody();
-//
-//            model.addAttribute("clientInfo", clientInfo);
             String replaced = update.getJson().replace("\r\n", " ");
             String replaced2 = "{ \"reservationId\": " + update.getReservationId() + ", \"updateValues\": " + replaced + "}";
             update.setJson(replaced2);
             model.addAttribute("update", update);
-//            String json = setup.getJson();
             String url = service;
 
             HttpHeaders headers = new HttpHeaders();
             headers.add("Content-Type", "application/json"); // This line can be removed if not needed
             HttpEntity<String> entity = new HttpEntity<String>(update.getJson(), headers);
             System.out.println(update.getJson());
+
             // Make a DELETE request
             ResponseEntity<String> response = restTemplate.exchange(
                     url, HttpMethod.PUT, entity, String.class);
-
-
-//            ResponseEntity<Long> response = restTemplate.postForEntity(url, entity, Long.class);
 
             return "update_success";
         }

@@ -80,3 +80,8 @@ nav a::before {
 nav a:hover::before {
     width: 100%;
 }
+
+a {
+    text-decoration: none;
+    color: black;
+}

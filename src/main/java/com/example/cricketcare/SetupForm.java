@@ -11,10 +11,5 @@ public class SetupForm {
         //TODO: replace carriage return with space
         this.json = json;
     }
-
-
-//    public String toString() {
-//        return "Person(Name: " + this.name + ", Age: " + this.age + ")";
-//    }
 }
 

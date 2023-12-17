@@ -49,9 +49,4 @@ public class ReservationForm {
     public void setNumSlots(String numSlots) {
         this.numSlots = numSlots;
     }
-
-
-//    public String toString() {
-//        return "Person(Name: " + this.name + ", Age: " + this.age + ")";
-//    }
 }

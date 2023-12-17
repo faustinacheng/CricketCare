@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <title> CricketCare </title>
+  <link rel="stylesheet" th:href="@{/styles.css}">
+  <link rel="stylesheet" th:href="@{/login.css}">
+</head>
+<body>
+<header>
+  <div class="container">
+    <a href="/greeting">
+      <img class="buglogo" th:src="@{images/bugbusters.jpg}" alt="bugs" width="100px">
+      <h1 class="logo">CricketCare</h1></a>
+  </div>
+</header>
+<main>
+  <h1>Login to your Client Interface</h1>
+  <form action="#" th:action="@{/loginPage}" th:object="${login}" method="post">
+      <textarea class="form-control" rows="5" style="white-space: nowrap"
+                name="clientId"
+                placeholder="Type in your clientId" th:field="*{clientId}"
+                required="required"></textarea>
+    <p><input type="submit" value="Submit" /> <input type="Reset" value="Reset" /></p>
+  </form>
+
+  <a th:href="@{/setup}" class = "create-account">
+    <h3> Create Account </h3>
+  </a>
+
+</main>
+</body>
+</html>

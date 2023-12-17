@@ -1,0 +1,32 @@
+body, html {
+    height: 100%;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+}
+header {
+    width: 100%;
+}
+main {
+    flex-grow: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    text-align: center;
+}
+.form-control {
+    margin: auto;
+    display: block;
+}
+
+.create-account{
+    display: inline-block;
+    background: #55d6aa;
+    margin-top: 50px;
+    padding-left: 8px;
+    padding-right: 8px;
+    text-align: center;
+    font-size: 14px;
+    border-radius: 10px;
+}
