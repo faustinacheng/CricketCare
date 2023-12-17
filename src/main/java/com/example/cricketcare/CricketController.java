@@ -36,7 +36,7 @@ public class CricketController {
         @GetMapping("/login")
         public String login(Model model){
             model.addAttribute("login", new LoginForm());
-            return "login_page";
+            return "login";
         }
 
         @PostMapping("/login")
@@ -48,12 +48,15 @@ public class CricketController {
             headers.add("Content-Type", "application/json");
             HttpEntity<Long> entity = new HttpEntity<Long>(clientId, headers);
 
-            try{
+            try {
                 ResponseEntity<String> response = restTemplate.getForEntity(url, String.class, entity);
                 this.clientId = clientId;
-                return "setup";
+                model.addAttribute("clientId", clientId);
+                return "setup_blocked";
             }
             catch (Exception e){
+                this.clientId = -1L;
+                model.addAttribute("login", new LoginForm());
                 return "login";
             }
         }
