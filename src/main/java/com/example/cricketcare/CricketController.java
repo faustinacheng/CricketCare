@@ -13,11 +13,12 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpMethod;
+import org.json.JSONObject;
 
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
-
+import java.util.Map;
 
 @Controller
 public class CricketController {
@@ -152,7 +153,31 @@ public class CricketController {
             ResponseEntity<String> response = restTemplate.getForEntity(url, String.class, entity);
             String clientInfo = response.getBody();
 
-            model.addAttribute("clientInfo", clientInfo);
+            String jsonPart = clientInfo.substring(clientInfo.indexOf('{'));
+            JSONObject jsonObj = new JSONObject(jsonPart);
+            
+            model.addAttribute("clientId", jsonObj.optInt("clientId"));
+            model.addAttribute("startTime", jsonObj.optString("startTime"));
+            model.addAttribute("endTime", jsonObj.optString("endTime"));
+            model.addAttribute("slotLength", jsonObj.optInt("slotLength"));
+            model.addAttribute("reservationsPerSlot", jsonObj.optInt("reservationsPerSlot"));
+
+            String urlCustom = service + "/getClientCustoms?clientId=" + clientId;
+            HttpHeaders headersCustom = new HttpHeaders();
+            headersCustom.add("Content-Type", "application/json");
+            HttpEntity<Long> entityCustom = new HttpEntity<Long>(clientId, headersCustom);
+            ResponseEntity<String> responseCustom = restTemplate.getForEntity(urlCustom, String.class, entityCustom);
+            String clientInfoCustom = responseCustom.getBody();
+
+            String jsonPartCustom = clientInfoCustom.substring(clientInfoCustom.indexOf('{'));
+            JSONObject jsonObjCustom = new JSONObject(jsonPartCustom);
+
+            String customFields = jsonObjCustom.optString("customValues");
+            String jsonPartCustomFields = customFields.substring(customFields.indexOf('{'));
+            JSONObject jsonObjCustomFields = new JSONObject(jsonPartCustomFields);
+
+            Map<String, Object> customValues = jsonObjCustomFields.toMap();
+            model.addAttribute("customValues", customValues);
             return "client_info";
         }
 
@@ -217,7 +242,14 @@ public class CricketController {
 
         @ExceptionHandler(Exception.class)
         public String handleException(Exception e, Model model) {
-            model.addAttribute("error", e.getMessage());
+            String errorString = e.getMessage();
+            String jsonPart = errorString.substring(errorString.indexOf('{'));
+            JSONObject jsonObj = new JSONObject(jsonPart);
+            
+            model.addAttribute("timestamp", jsonObj.optString("timestamp"));
+            model.addAttribute("status", jsonObj.optInt("status"));
+            model.addAttribute("errorMessage", jsonObj.optString("message"));
+            model.addAttribute("path", jsonObj.optString("path"));
             return "error_view";
         }
 }

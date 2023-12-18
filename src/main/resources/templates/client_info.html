@@ -1,37 +1,61 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<html lang="en">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width">
-    <title> CricketCare </title>
-    <!-- Style CSS -->
-    <link rel="stylesheet" th:href="@{/styles.css}">
+  <html lang="en">
+    <head>
+      <meta charset="utf-8" />
+      <meta name="viewport" content="width=device-width" />
+      <title>CricketCare</title>
+      <!-- Style CSS -->
+      <link rel="stylesheet" th:href="@{/styles.css}" />
+    </head>
+    <body>
+      <header>
+        <div class="container">
+          <a href="/greeting">
+            <img
+              class="buglogo"
+              th:src="@{images/bugbusters.jpg}"
+              alt="bugs"
+              width="100px"
+            />
+            <h1 class="logo">CricketCare</h1></a
+          >
 
-</head>
-<body>
-
-<header>
-    <div class="container">
-        <a href="/greeting">
-            <img class="buglogo" th:src="@{images/bugbusters.jpg}" alt="bugs" width="100px">
-            <h1 class="logo">CricketCare</h1></a>
-
-        <nav>
+          <nav>
             <ul>
-                <li><a href="/setup">Setup</a></li>
-                <li><a href="/getClientInfo">Get Schema</a></li>
-                <li><a href="/createReservation">Book</a></li>
-                <li><a href="/getReservations">Appointments</a></li>
-                <li><a href="/updateReservation">Update</a></li>
-                <li><a href="/cancelReservation">Delete</a></li>
+              <li><a href="/setup">Setup</a></li>
+              <li><a href="/getClientInfo">Get Schema</a></li>
+              <li><a href="/createReservation">Book</a></li>
+              <li><a href="/getReservations">Appointments</a></li>
+              <li><a href="/updateReservation">Update</a></li>
+              <li><a href="/cancelReservation">Delete</a></li>
             </ul>
-        </nav>
-    </div>
-</header>
-<main>
-<h1>Here's your hospital's information:</h1>
-<p th:text="${clientInfo}" />
-</main>
-</body>
+          </nav>
+        </div>
+      </header>
+      <main>
+        <h1>Here's your hospital's information:</h1>
+        <div class="schema-details">
+          <p><strong>clientId:</strong> <span th:text="${clientId}"></span></p>
+          <p>
+            <strong>startTime:</strong> <span th:text="${startTime}"></span>
+          </p>
+          <p><strong>endTime:</strong> <span th:text="${endTime}"></span></p>
+          <p>
+            <strong>slotLength:</strong> <span th:text="${slotLength}"></span>
+          </p>
+          <p>
+            <strong>reservationsPerSlot:</strong>
+            <span th:text="${reservationsPerSlot}"></span>
+          </p>
+          <div th:each="entry : ${customValues}">
+            <p>
+              <strong th:text="${entry.key}"></strong>:
+              <span th:text="${entry.value}"></span>
+            </p>
+          </div>
+        </div>
+      </main>
+    </body>
+  </html>
 </html>

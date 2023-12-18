@@ -1,55 +1,122 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<html lang="en">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width">
-    <title> CricketCare </title>
-    <!-- Style CSS -->
-    <link rel="stylesheet" th:href="@{/styles.css}">
+  <html lang="en">
+    <head>
+      <meta charset="utf-8" />
+      <meta name="viewport" content="width=device-width" />
+      <title>CricketCare</title>
+      <!-- Style CSS -->
+      <link rel="stylesheet" th:href="@{/styles.css}" />
+      <script type="text/javascript">
+        function addCustomField() {
+          var container = document.getElementById("customFieldsContainer");
 
-</head>
-<body>
+          var div = document.createElement("div");
+          div.className = "customField";
 
-<header>
-    <div class="container">
-        <a href="/greeting">
-            <img class="buglogo" th:src="@{images/bugbusters.jpg}" alt="bugs" width="100px">
-            <h1 class="logo">CricketCare</h1></a>
+          var inputField = document.createElement("input");
+          inputField.type = "text";
+          inputField.name = "customFieldName[]";
+          inputField.placeholder = "Field Name";
+          div.appendChild(inputField);
 
-        <nav>
+          var typeField = document.createElement("select");
+          typeField.name = "customFieldType[]";
+          typeField.innerHTML =
+            "<option value='VARCHAR'>VARCHAR</option><option value='DATETIME'>DATETIME</option><option value='DOUBLE'>DOUBLE</option><option value='INTEGER'>INTEGER</option><option value='BOOLEAN'>BOOLEAN</option>";
+          div.appendChild(typeField);
+
+          container.appendChild(div);
+        }
+
+        function prepareFormData(event) {
+          event.preventDefault();
+          var form = event.target;
+          var formData = {
+            startTime: form.startTime.value,
+            endTime: form.endTime.value,
+            slotLength: parseInt(form.slotLength.value),
+            reservationsPerSlot: parseInt(form.reservationsPerSlot.value),
+            customValues: {},
+          };
+
+          var customFieldNames = form.querySelectorAll(
+            ".customField input[name='customFieldName[]']"
+          );
+          var customFieldTypes = form.querySelectorAll(
+            ".customField select[name='customFieldType[]']"
+          );
+
+          for (var i = 0; i < customFieldNames.length; i++) {
+            var name = customFieldNames[i].value;
+            var type = customFieldTypes[i].value;
+            if (name) {
+              formData.customValues[name] = type;
+            }
+          }
+
+          // Create a hidden input to store the stringified JSON
+          var hiddenInput = document.createElement("input");
+          hiddenInput.type = "hidden";
+          hiddenInput.name = "json";
+          hiddenInput.value = JSON.stringify(formData);
+          form.appendChild(hiddenInput);
+
+          // Submit the form
+          form.submit();
+        }
+      </script>
+    </head>
+    <body>
+      <header>
+        <div class="container">
+          <a href="/greeting">
+            <img
+              class="buglogo"
+              th:src="@{images/bugbusters.jpg}"
+              alt="bugs"
+              width="100px"
+            />
+            <h1 class="logo">CricketCare</h1></a
+          >
+
+          <nav>
             <ul>
-                <li><a href="/setup">Setup</a></li>
-                <li><a href="/getClientInfo">Get Schema</a></li>
-                <li><a href="/createReservation">Book</a></li>
-                <li><a href="/getReservations">Appointments</a></li>
-                <li><a href="/updateReservation">Update</a></li>
-                <li><a href="/cancelReservation">Delete</a></li>
+              <li><a href="/setup">Setup</a></li>
+              <li><a href="/getClientInfo">Get Schema</a></li>
+              <li><a href="/createReservation">Book</a></li>
+              <li><a href="/getReservations">Appointments</a></li>
+              <li><a href="/updateReservation">Update</a></li>
+              <li><a href="/cancelReservation">Delete</a></li>
             </ul>
-        </nav>
-    </div>
-</header>
-<main>
-<h1>Register for CricketCare</h1>
-<form action="#" th:action="@{/setup}" th:object="${setup}" method="post">
-<!--    <p>Custom Attributes (JSON): <input type="text" th:field="*{json}" /></p>-->
-    <p>Enter your desired initialization values and custom fields (JSON): </p>
-    <textarea class="form-control" rows="5" style="white-space: nowrap"
-              name="json"
-              placeholder='ie. {
-"startTime":  "09:00:00",
-"endTime": "21:00:00",
-"reservationsPerSlot": 3,
- "slotLength": "1",
-  "customValues": {
-    "doctorId": "INTEGER",
-    "patientNotes": "VARCHAR"
-  }
-}
-' th:field="*{json}"
-              required="required"></textarea>
-    <p><input type="submit" value="Submit" /> <input type="reset" value="Reset" /></p>
-</form>
-</main>
-</body>
+          </nav>
+        </div>
+      </header>
+      <main>
+        <h1>Register for CricketCare</h1>
+        <form action="/setup" method="post" onsubmit="prepareFormData(event)">
+          <p>Start Time: <input type="time" name="startTime" required /></p>
+          <p>End Time: <input type="time" name="endTime" required /></p>
+          <p>
+            Reservations Per Slot:
+            <input type="number" name="reservationsPerSlot" required />
+          </p>
+          <p>
+            Slot Length (mins):
+            <input type="number" name="slotLength" required />
+          </p>
+
+          <h3>Custom Fields:</h3>
+          <div id="customFieldsContainer"></div>
+          <button type="button" onclick="addCustomField()">
+            Add Custom Field
+          </button>
+          <p>
+            <input type="submit" value="Submit" />
+            <input type="reset" value="Reset" />
+          </p>
+        </form>
+      </main>
+    </body>
+  </html>
 </html>

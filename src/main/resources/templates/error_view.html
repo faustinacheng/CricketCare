@@ -12,38 +12,54 @@
 <!--</html>-->
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<html lang="en">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width">
-  <title> CricketCare </title>
-  <!-- Style CSS -->
-  <link rel="stylesheet" th:href="@{/styles.css}">
+  <html lang="en">
+    <head>
+      <meta charset="utf-8" />
+      <meta name="viewport" content="width=device-width" />
+      <title>CricketCare</title>
+      <!-- Style CSS -->
+      <link rel="stylesheet" th:href="@{/styles.css}" />
+    </head>
+    <body>
+      <header>
+        <div class="container">
+          <a href="/greeting">
+            <img
+              class="buglogo"
+              th:src="@{images/bugbusters.jpg}"
+              alt="bugs"
+              width="100px"
+            />
+            <h1 class="logo">CricketCare</h1></a
+          >
 
-</head>
-<body>
-
-<header>
-  <div class="container">
-    <a href="/greeting">
-      <img class="buglogo" th:src="@{images/bugbusters.jpg}" alt="bugs" width="100px">
-      <h1 class="logo">CricketCare</h1></a>
-
-    <nav>
-      <ul>
-        <li><a href="/setup">Setup</a></li>
-        <li><a href="/getClientInfo">Get Schema</a></li>
-        <li><a href="/createReservation">Book</a></li>
-        <li><a href="/getReservations">Appointments</a></li>
-        <li><a href="/updateReservation">Update</a></li>
-        <li><a href="/cancelReservation">Delete</a></li>
-      </ul>
-    </nav>
-  </div>
-</header>
-<main>
-  <h1> An Error Has Occurred</h1>
-  <p th:text="${error}" />
-</main>
-</body>
+          <nav>
+            <ul>
+              <li><a href="/setup">Setup</a></li>
+              <li><a href="/getClientInfo">Get Schema</a></li>
+              <li><a href="/createReservation">Book</a></li>
+              <li><a href="/getReservations">Appointments</a></li>
+              <li><a href="/updateReservation">Update</a></li>
+              <li><a href="/cancelReservation">Delete</a></li>
+            </ul>
+          </nav>
+        </div>
+      </header>
+      <main>
+        <div class="error-container">
+          <h1 class="error-header">Error - Bad Request</h1>
+          <div class="error-details">
+            <p>
+              <strong>Timestamp:</strong> <span th:text="${timestamp}"></span>
+            </p>
+            <p><strong>Status:</strong> <span th:text="${status}"></span></p>
+            <p>
+              <strong>Message:</strong> <span th:text="${errorMessage}"></span>
+            </p>
+            <p><strong>Path:</strong> <span th:text="${path}"></span></p>
+          </div>
+        </div>
+      </main>
+    </body>
+  </html>
 </html>
