@@ -110,6 +110,10 @@ public class CricketController {
         }
         @GetMapping("/createReservation")
         public String createReservation(Model model) {
+            if (clientId == -1L) {
+                return "client_info_blocked";
+            }
+
             model.addAttribute("reservation", new ReservationForm());
             return "create_reservation";
         }
@@ -217,6 +221,10 @@ public class CricketController {
 
         @GetMapping("/updateReservation")
         public String updateReservation(Model model){
+            if (clientId == -1L) {
+                return "client_info_blocked";
+            }
+            
             model.addAttribute("update", new UpdateForm());
             return "update_reservation";
         }
