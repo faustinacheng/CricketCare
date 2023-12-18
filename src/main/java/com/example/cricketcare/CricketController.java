@@ -68,7 +68,11 @@ public class CricketController {
         }
 
         @GetMapping("/setup")
-        public String setup(Model model) {
+        public String setup(@RequestParam(name = "reset", required = false) Boolean reset, Model model) {
+            if (Boolean.TRUE.equals(reset)) {
+                clientId = -1L;
+            }
+
             if (clientId != -1L) {
                 model.addAttribute("clientId", clientId);
                 return "setup_blocked";
