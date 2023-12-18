@@ -22,8 +22,8 @@ import java.util.Map;
 
 @Controller
 public class CricketController {
-    //String service = "http://localhost:8081/api/v1/reservation";
-    String service = "https://bugyourspot-407405.uc.r.appspot.com/api/v1/reservation";
+    String service = "http://localhost:8081/api/v1/reservation";
+    //String service = "https://cricketcare.uc.r.appspot.com/setup";
     private final RestTemplate restTemplate;
     Long clientId = -1L;
     Boolean booked = false;
