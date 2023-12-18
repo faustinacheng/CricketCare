@@ -1,37 +1,98 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<html lang="en">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width">
-  <title> CricketCare </title>
-  <!-- Style CSS -->
-  <link rel="stylesheet" th:href="@{/styles.css}">
+  <html lang="en">
+    <head>
+      <meta charset="utf-8" />
+      <meta name="viewport" content="width=device-width" />
+      <title>CricketCare</title>
+      <!-- Style CSS -->
+      <link rel="stylesheet" th:href="@{/styles.css}" />
+    </head>
+    <body>
+      <header>
+        <div class="container">
+          <a href="/greeting">
+            <img
+              class="buglogo"
+              th:src="@{images/bugbusters.jpg}"
+              alt="bugs"
+              width="100px"
+            />
+            <h1 class="logo">CricketCare</h1></a
+          >
 
-</head>
-<body>
+          <nav>
+            <ul>
+              <li><a href="/setup">Setup</a></li>
+              <li><a href="/getClientInfo">Get Schema</a></li>
+              <li><a href="/createReservation">Book</a></li>
+              <li><a href="/getReservations">Appointments</a></li>
+              <li><a href="/updateReservation">Update</a></li>
+              <li><a href="/cancelReservation">Delete</a></li>
+            </ul>
+          </nav>
+        </div>
+      </header>
+      <main>
+        <h1>Here are your appointments:</h1>
+        <div id="reservationsContainer"></div>
 
-<header>
-  <div class="container">
-    <a href="/greeting">
-      <img class="buglogo" th:src="@{images/bugbusters.jpg}" alt="bugs" width="100px">
-      <h1 class="logo">CricketCare</h1></a>
+        <script th:inline="javascript">
+          /*<![CDATA[*/
+          var jsonString = /*[[${clientInfo}]]*/ "[]";
+          var reservations = JSON.parse(jsonString);
 
-    <nav>
-      <ul>
-        <li><a href="/setup">Setup</a></li>
-        <li><a href="/getClientInfo">Get Schema</a></li>
-        <li><a href="/createReservation">Book</a></li>
-        <li><a href="/getReservations">Appointments</a></li>
-        <li><a href="/updateReservation">Update</a></li>
-        <li><a href="/cancelReservation">Delete</a></li>
-      </ul>
-    </nav>
-  </div>
-</header>
-<main>
-<h1>Here are your appointments:</h1>
-<p th:text="${clientInfo}" />
-</main>
-</body>
+          function parseDateTime(dateTimeStr) {
+            return new Date(dateTimeStr);
+          }
+
+          // Sort reservations by startTime
+          reservations.sort(function (a, b) {
+            return parseDateTime(a.startTime) - parseDateTime(b.startTime);
+          });
+
+          var container = document.getElementById("reservationsContainer");
+          var lastDate = null;
+          var dateGroupContainer;
+
+          reservations.forEach(function (reservation) {
+            var reservationDate = parseDateTime(
+              reservation.startTime
+            ).toDateString();
+
+            if (lastDate !== reservationDate) {
+              lastDate = reservationDate;
+              dateGroupContainer = document.createElement("div");
+              dateGroupContainer.className = "reservation-group";
+              container.appendChild(dateGroupContainer);
+
+              var dateHeader = document.createElement("h3");
+              dateHeader.textContent = "Reservations for " + reservationDate;
+              dateGroupContainer.appendChild(dateHeader);
+            }
+
+            var div = document.createElement("div");
+            div.className = "reservation";
+            var htmlContent = "";
+
+            for (var key in reservation) {
+              if (reservation.hasOwnProperty(key)) {
+                htmlContent +=
+                  "<strong>" +
+                  key.charAt(0).toUpperCase() +
+                  key.slice(1) +
+                  ":</strong> " +
+                  reservation[key] +
+                  "<br>";
+              }
+            }
+
+            div.innerHTML = htmlContent;
+            dateGroupContainer.appendChild(div);
+          });
+          /*]]>*/
+        </script>
+      </main>
+    </body>
+  </html>
 </html>
